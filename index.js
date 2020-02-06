@@ -22,6 +22,8 @@ function init(productionMode = false, options = {
   pathParam: true,
   bodyParam: true,
   queryParam: true,
+  generateLogs: true,
+  generateLogsPath: ''
 }) {
   _this = this;
   this.productionMode = productionMode;
@@ -71,6 +73,43 @@ init.prototype.logger = (req, res, next) => {
   if (_this.config.queryParam) originalConsole.log('+++++++ Request query parameters', req.query);
   originalConsole.log( '*** * *** * *** * *** * *** * *** * *** * *** * ***');
   originalConsole.log('\n');
+
+
+  // generateLogs: Create file and Write lines to file
+  if (_this.config.generateLogs) {
+
+    let addToString = (str, x) => x ? `\n${str} ${JSON.stringify(x)}\n` : `\n${str}\n`;
+
+    var writeString = '';
+
+    writeString = writeString + addToString('\n');
+    writeString = writeString + addToString( '*\** * *** * *** * *** * *** * *** * *** * *** * ***');
+    if (_this.config.date) writeString = writeString + addToString('+++++++ Request received at ', getCurrentDateTime());
+    if (_this.config.url) writeString = writeString + addToString('+++++++ Request path ', req.url);
+    if (_this.config.method) writeString = writeString + addToString('+++++++ Request method ', req.method);
+    if (_this.config.headers) writeString = writeString + addToString('+++++++ Request headers ', req.headers);
+    if (_this.config.pathParam) writeString = writeString + addToString('+++++++ Request path parameters', req.params);
+    if (_this.config.bodyParam) writeString = writeString + addToString('+++++++ Request body parameters', req.body);
+    if (_this.config.queryParam) writeString = writeString + addToString('+++++++ Request query parameters', req.query);
+    writeString = writeString + addToString( '*** * *** * *** * *** * *** * *** * *** * *** * ***');
+    writeString = writeString + addToString('\n');
+
+    let writePath = '';
+
+    if (_this.config.generateLogsPath) {
+      writePath = `${_this.config.generateLogsPath}/logs.txt`;
+    } else {
+      writePath = `logs.txt`;
+    }
+
+    console.log({ writePath })
+
+    require('fs').writeFile(writePath, writeString, {flag: "a"}, err => {
+      if (err) throw err;
+      console.log('Successfully written logs to disk.');
+    })  
+  }
+  
   next();
 };
 
