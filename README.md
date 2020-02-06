@@ -51,7 +51,9 @@ const log = new _expressLog(true, {
                                     headers: true,
                                     pathParam: false,
                                     bodyParam: true,
-                                    queryParam: true
+                                    queryParam: true,
+                                    generateLogs: true,
+                                    generateLogsPath: ''
                                   });
 
 ```
@@ -66,6 +68,9 @@ const log = new _expressLog();
 console = log;
 console.info('test info'); // same like our log.info('test info')
 ```
+
+### Save logs to file system
+pass key "generateLogs" to generate logs.txt in project root, or change file path passing the file path to generateLogsPath.
 
 ## Example
 ```node
